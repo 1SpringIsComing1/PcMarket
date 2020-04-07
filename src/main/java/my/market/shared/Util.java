@@ -1,4 +1,4 @@
-package my.makrket.shared;
+package my.market.shared;
 
 import org.springframework.stereotype.Component;
 

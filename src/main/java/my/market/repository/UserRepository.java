@@ -1,4 +1,4 @@
-package my.makrket.repository;
+package my.market.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

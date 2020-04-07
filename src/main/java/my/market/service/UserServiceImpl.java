@@ -1,10 +1,10 @@
-package my.makrket.service;
+package my.market.service;
 
 import lombok.RequiredArgsConstructor;
-import my.makrket.repository.UserEntity;
-import my.makrket.repository.UserRepository;
-import my.makrket.shared.UserDto;
-import my.makrket.shared.Util;
+import my.market.repository.UserEntity;
+import my.market.repository.UserRepository;
+import my.market.shared.UserDto;
+import my.market.shared.Util;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.security.core.userdetails.User;

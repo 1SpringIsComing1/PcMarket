@@ -1,7 +1,9 @@
-package my.makrket;
+package my.market;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class PcMarketApplication {
@@ -9,5 +11,8 @@ public class PcMarketApplication {
     public static void main(String[] args) {
         SpringApplication.run(PcMarketApplication.class, args);
     }
-
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

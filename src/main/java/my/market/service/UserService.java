@@ -1,6 +1,6 @@
-package my.makrket.service;
+package my.market.service;
 
-import my.makrket.shared.UserDto;
+import my.market.shared.UserDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserService  extends UserDetailsService {
