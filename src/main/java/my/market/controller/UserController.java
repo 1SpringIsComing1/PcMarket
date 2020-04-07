@@ -43,6 +43,35 @@ public class UserController {
         return modelMapper.map(userById, UserResponseModel.class);
     }
 
-//    @PutMapping(path = "/{id}")
-//    public
+    @PutMapping(
+            path = "/{id}",
+            produces = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            },
+            consumes = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            })
+    public ResponseEntity<CreateUserRequestModel> updateUser(@RequestBody CreateUserRequestModel userDetails, @PathVariable String id) {
+        UserDto userDto = modelMapper.map(userDetails, UserDto.class);
+        userService.updateUser(id,userDto);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+    @DeleteMapping(
+            path = "/{id}",
+            produces = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            },
+            consumes = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            })
+    public ResponseEntity updateUser(@PathVariable String id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
 }

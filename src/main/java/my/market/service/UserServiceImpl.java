@@ -1,6 +1,7 @@
 package my.market.service;
 
 import lombok.RequiredArgsConstructor;
+import my.market.model.response.ErrorMessage;
 import my.market.repository.UserEntity;
 import my.market.repository.UserRepository;
 import my.market.shared.UserDto;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 
 import static my.market.model.response.ErrorMessage.RECORD_ALREADY_EXISTS;
@@ -50,6 +52,25 @@ public class UserServiceImpl implements UserService {
     public UserDto findByEmail(String email) {
         UserEntity userByEmail = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
         return modelMapper.map(userByEmail, UserDto.class);
+    }
+
+    @Override
+    public void updateUser(String id, UserDto user) {
+        UserEntity userEntity = userRepository.findByUserId(id).orElseThrow(
+                () -> new EntityNotFoundException(ErrorMessage.NO_RECORD_FOUND.getErrorMassage()));
+
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+        userRepository.save(userEntity);
+
+    }
+
+    @Override
+    public void deleteUser(String id) {
+        UserEntity userEntity = userRepository.findByUserId(id).orElseThrow(
+                () -> new EntityNotFoundException(ErrorMessage.NO_RECORD_FOUND.getErrorMassage()));
+        
+        userRepository.delete(userEntity);
     }
 
     @Override
