@@ -1,4 +1,4 @@
-package my.market.model;
+package my.market.model.request;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -2,6 +2,10 @@ package my.market.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<UserEntity ,Long> {
-    UserEntity findAllByEmail(String email);
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    Optional<UserEntity> findByEmail(String email);
+
+    Optional<UserEntity> findByUserId(String id);
 }

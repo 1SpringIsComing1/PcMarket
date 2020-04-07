@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
-import my.market.model.LoginRequestModel;
+import my.market.model.request.LoginRequestModel;
 import my.market.service.UserService;
 import my.market.shared.UserDto;
 import org.springframework.core.env.Environment;
@@ -24,13 +24,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
-
 @RequiredArgsConstructor
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final UserService userService;
     private final Environment environment;
-
 
     public AuthenticationFilter(UserService userService, Environment environment, AuthenticationManager authenticationManager) {
         this.userService = userService;
@@ -60,14 +58,15 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                                             Authentication authResult) throws IOException, ServletException {
 
         String username = ((User) authResult.getPrincipal()).getUsername();
-        UserDto userDetailsByEmail = userService.getUserDetailsByEmail(username);
+        UserDto userDetailsByEmail = userService.findByEmail(username);
 
         String token = Jwts.builder()
+
                 .setSubject(userDetailsByEmail.getUserId())
                 .setExpiration(new Date(System.currentTimeMillis() + Long.parseLong(Objects.requireNonNull(environment.getProperty("token.expiration_time")))))
                 .signWith(SignatureAlgorithm.HS512, environment.getProperty("token.secret"))
                 .compact();
-        response.addHeader("token", token);
+        response.addHeader("token", environment.getProperty("token.prefix")+ token);
         response.addHeader("userId", userDetailsByEmail.getUserId());
 
     }
