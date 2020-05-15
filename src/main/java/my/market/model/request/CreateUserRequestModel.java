@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,4 +23,6 @@ public class CreateUserRequestModel {
     @NotNull(message = "Password cannot be null")
     @Size(min = 6, max = 64, message = "Password mus be equal or grater than 8 characters and less than 64 characters")
     private String password;
+
+    private List<AddressRequestModel> addresses;
 }

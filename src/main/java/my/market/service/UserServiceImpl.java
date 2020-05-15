@@ -2,11 +2,15 @@ package my.market.service;
 
 import lombok.RequiredArgsConstructor;
 import my.market.model.response.ErrorMessage;
-import my.market.repository.UserEntity;
+import my.market.repository.entity.UserEntity;
 import my.market.repository.UserRepository;
+import my.market.shared.AddressDto;
 import my.market.shared.UserDto;
 import my.market.shared.Util;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static my.market.model.response.ErrorMessage.RECORD_ALREADY_EXISTS;
 
@@ -35,6 +40,13 @@ public class UserServiceImpl implements UserService {
 
         userDto.setUserId(util.generateUserId());
         userDto.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        for (int i = 0; i < userDto.getAddresses().size(); i++) {
+            AddressDto addressDto = userDto.getAddresses().get(i);
+            addressDto.setUserDetails(userDto);
+            addressDto.setAddressId(util.generateAddressId());
+            userDto.getAddresses().set(i, addressDto);
+
+        }
 
         UserEntity userEntity = modelMapper.map(userDto, UserEntity.class);
 
@@ -42,6 +54,7 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
+    
     @Override
     public UserDto findById(String id) {
         UserEntity userById = userRepository.findByUserId(id).orElseThrow(() -> new UsernameNotFoundException(id));
@@ -74,6 +87,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<UserDto> getUsers(int page, int limit) {
+        Pageable pageable = PageRequest.of(page, limit);
+        Page<UserEntity> userPage = userRepository.findAll(pageable);
+        List<UserEntity> userEntities = userPage.getContent();
+        return mapListUserEntityToListUserDto(userEntities);
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity userByEmail = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
@@ -81,6 +102,12 @@ public class UserServiceImpl implements UserService {
                 userByEmail.getEncryptedPassword(),
                 true, true, true, true, new ArrayList<>());
     }
-
+    private List<UserDto> mapListUserEntityToListUserDto(List<UserEntity> content) {
+        List<UserDto> usersDto = new ArrayList<>();
+        for (UserEntity userEntity : content) {
+            modelMapper.map(userEntity, UserDto.class);
+        }
+        return usersDto;
+    }
 
 }

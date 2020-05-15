@@ -1,5 +1,6 @@
 package my.market.repository;
 
+import my.market.repository.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

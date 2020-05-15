@@ -9,5 +9,8 @@ public class Util {
     public String generateUserId() {
         return UUID.randomUUID().toString();
     }
+    public String generateAddressId() {
+        return UUID.randomUUID().toString();
+    }
 }
 
