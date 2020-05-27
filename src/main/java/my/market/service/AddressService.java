@@ -5,5 +5,5 @@ import my.market.shared.AddressDto;
 import java.util.List;
 
 public interface AddressService {
-    List<AddressDto> getAddressesByUserId();
+    List<AddressDto> getAddressesByUserId(String id);
 }
