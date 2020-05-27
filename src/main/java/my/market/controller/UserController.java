@@ -2,16 +2,21 @@ package my.market.controller;
 
 import lombok.RequiredArgsConstructor;
 import my.market.model.request.CreateUserRequestModel;
+import my.market.model.response.AddressesResponseModel;
 import my.market.model.response.UserResponseModel;
+import my.market.service.AddressService;
 import my.market.service.UserService;
+import my.market.shared.AddressDto;
 import my.market.shared.UserDto;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +30,7 @@ public class UserController {
 
     private final UserService userService;
     private final ModelMapper modelMapper;
+    private final AddressService addressService;
 
     @ResponseStatus(CREATED)
     @PostMapping(produces = {
@@ -91,6 +97,29 @@ public class UserController {
             })
     public void deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
+    }
+    @GetMapping(path = "/{id}/addresses",
+            produces = {
+                    MediaType.APPLICATION_XML_VALUE,
+                    MediaType.APPLICATION_JSON_VALUE
+            }
+    )
+    public List<AddressesResponseModel> getUserAddresses(@PathVariable String id) {
+        List<AddressesResponseModel> addresesResponseModel = new ArrayList<>();
+        List<AddressDto> addressesDto = addressService.getAddressesByUserId();
+
+        addresesResponseModel = mapAddressesDtoToAddressesResponseModel(addresesResponseModel, addressesDto);
+
+        return addresesResponseModel;
+
+    }
+
+    private List<AddressesResponseModel> mapAddressesDtoToAddressesResponseModel(List<AddressesResponseModel> returnValue, List<AddressDto> addressesByUserId) {
+        if (addressesByUserId != null && !addressesByUserId.isEmpty()) {
+            Type listType = new TypeToken<List<AddressesResponseModel>>(){}.getType();
+            returnValue = modelMapper.map(addressesByUserId, listType);
+        }
+        return returnValue;
     }
 
     private List<UserResponseModel> mapListUserDtoToListUserRequestModel(List<UserDto> users) {

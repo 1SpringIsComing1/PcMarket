@@ -1,9 +1,10 @@
-package my.market.service;
+package my.market.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import my.market.model.response.ErrorMessage;
 import my.market.repository.entity.UserEntity;
 import my.market.repository.UserRepository;
+import my.market.service.UserService;
 import my.market.shared.AddressDto;
 import my.market.shared.UserDto;
 import my.market.shared.Util;
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-    
+
     @Override
     public UserDto findById(String id) {
         UserEntity userById = userRepository.findByUserId(id).orElseThrow(() -> new UsernameNotFoundException(id));
@@ -69,12 +70,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(String id, UserDto user) {
-        UserEntity userEntity = userRepository.findByUserId(id).orElseThrow(
-                () -> new EntityNotFoundException(ErrorMessage.NO_RECORD_FOUND.getErrorMassage()));
-
-        userEntity.setFirstName(user.getFirstName());
-        userEntity.setLastName(user.getLastName());
-        userRepository.save(userEntity);
+        userRepository.findByUserId(id)
+                .map(entity -> {
+                    entity.setFirstName(user.getFirstName());
+                    entity.setLastName(user.getLastName());
+                    userRepository.save(entity);
+                    return entity;
+                })
+                .orElseThrow(() -> new EntityNotFoundException(ErrorMessage.NO_RECORD_FOUND.getErrorMassage()));
 
     }
 
@@ -82,7 +85,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String id) {
         UserEntity userEntity = userRepository.findByUserId(id).orElseThrow(
                 () -> new EntityNotFoundException(ErrorMessage.NO_RECORD_FOUND.getErrorMassage()));
-        
+
         userRepository.delete(userEntity);
     }
 
@@ -102,6 +105,7 @@ public class UserServiceImpl implements UserService {
                 userByEmail.getEncryptedPassword(),
                 true, true, true, true, new ArrayList<>());
     }
+
     private List<UserDto> mapListUserEntityToListUserDto(List<UserEntity> content) {
         List<UserDto> usersDto = new ArrayList<>();
         for (UserEntity userEntity : content) {
