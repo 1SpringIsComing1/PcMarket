@@ -106,12 +106,12 @@ public class UserController {
             }
     )
     public List<AddressesResponseModel> getUserAddresses(@PathVariable String id) {
-        List<AddressesResponseModel> addresesResponseModel = new ArrayList<>();
+        List<AddressesResponseModel> addressResponseModel = new ArrayList<>();
         List<AddressDto> addressesDto = addressService.getAddressesByUserId(id);
 
-        addresesResponseModel = mapAddressesDtoToAddressesResponseModel(addresesResponseModel, addressesDto);
+        addressResponseModel = mapAddressesDtoToAddressesResponseModel(addressResponseModel, addressesDto);
 
-        return addresesResponseModel;
+        return addressResponseModel;
 
     }
 

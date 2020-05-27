@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
@@ -62,6 +63,7 @@ public class UserServiceImpl implements UserService {
         return modelMapper.map(userById, UserDto.class);
     }
 
+    @Transactional
     @Override
     public UserDto findByEmail(String email) {
         UserEntity userByEmail = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
