@@ -98,6 +98,7 @@ public class UserController {
     public void deleteUser(@PathVariable String id) {
         userService.deleteUser(id);
     }
+
     @GetMapping(path = "/{id}/addresses",
             produces = {
                     MediaType.APPLICATION_XML_VALUE,
@@ -106,7 +107,7 @@ public class UserController {
     )
     public List<AddressesResponseModel> getUserAddresses(@PathVariable String id) {
         List<AddressesResponseModel> addresesResponseModel = new ArrayList<>();
-        List<AddressDto> addressesDto = addressService.getAddressesByUserId();
+        List<AddressDto> addressesDto = addressService.getAddressesByUserId(id);
 
         addresesResponseModel = mapAddressesDtoToAddressesResponseModel(addresesResponseModel, addressesDto);
 
@@ -115,11 +116,8 @@ public class UserController {
     }
 
     private List<AddressesResponseModel> mapAddressesDtoToAddressesResponseModel(List<AddressesResponseModel> returnValue, List<AddressDto> addressesByUserId) {
-        if (addressesByUserId != null && !addressesByUserId.isEmpty()) {
-            Type listType = new TypeToken<List<AddressesResponseModel>>(){}.getType();
-            returnValue = modelMapper.map(addressesByUserId, listType);
-        }
-        return returnValue;
+        Type listType = new TypeToken<List<AddressesResponseModel>>() {}.getType();
+        return modelMapper.map(addressesByUserId, listType);
     }
 
     private List<UserResponseModel> mapListUserDtoToListUserRequestModel(List<UserDto> users) {
